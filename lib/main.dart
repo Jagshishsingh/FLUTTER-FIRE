@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget{
@@ -42,12 +43,27 @@ class _HomePageState extends State<HomePage> {
   File pickedImage;
   bool isLoaded = false;
   Future pickImage() async{
-    var tempStore = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var tempStore = await ImagePicker.pickImage(source: ImageSource.camera;
     setState((){
       pickedImage = tempStore;
       isLoaded = true;
     });
   }
+
+  Future readText() async{
+    FirebaseVisionImage ourImage = FirebaseVisionImage.fromFile(pickedImage);
+    TextRecognizer recognizeText = FirebaseVision.instance.textRecognizer();
+    VisionText readText = await recognizeText.processImage(ourImage);
+
+    for (TextBlock block in readText.blocks){
+      for(TextLine line in block.lines){
+        for(TextElement word in line.elements){
+          print(word.text);
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
